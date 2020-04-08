@@ -14,6 +14,11 @@ class DrumkKit {
         this.selects = document.querySelectorAll('select');
         this.muteBtns = document.querySelectorAll('.mute');
         this.tempoSlider = document.querySelector('.tempo-slider');
+        this.saveButton = document.querySelector('.save-track');
+        this.loadButton = document.querySelector('.load-track');
+        this.activePadsNumber = 0;
+        this.myTracks = localStorage.getItem('myTracks') ? JSON.parse(localStorage.getItem('myTracks')) : {};
+
     }
 
     repeat() {
@@ -61,8 +66,13 @@ class DrumkKit {
         }
     }
 
-    activePad() {
-        this.classList.toggle('active');
+    activePad(e) {
+        e.target.classList.toggle('active');
+        if (e.target.classList.contains('active')) {
+            this.activePadsNumber++;
+        } else {
+            this.activePadsNumber--;
+        }
     }
 
     updateButton() {
@@ -73,6 +83,39 @@ class DrumkKit {
             this.playBtn.innerText = 'Play';
             this.playBtn.classList.remove('active');
         }
+    }
+
+    showSaveButton() {
+        if (!this.saveButton.classList.contains('visible')) {
+            this.saveButton.classList.add('visible');
+        } else {
+            if (this.activePadsNumber === 0) {
+                this.saveButton.classList.remove('visible');
+            }
+        }
+    }
+
+    loadTrackButton(e) {
+        console.log(JSON.stringify(this.myTracks));
+    }
+
+    saveCurrentMix(e) {
+        const allPadsMix = Array.from(document.querySelectorAll('.pad'));
+
+        const currentPadsMix = allPadsMix.filter((el) =>
+            el.classList.contains('active')
+        );
+
+        //Make classes array
+        const currentPadsClassesArray = currentPadsMix.map(
+            (pad) => pad.classList
+        );
+
+        const trackName = 'FirstMix';
+
+        this.myTracks[trackName] = currentPadsClassesArray;
+
+        localStorage.setItem('myTracks', JSON.stringify(this.myTracks));
     }
 
     changeSound(event) {
@@ -146,7 +189,12 @@ const drumKit = new DrumkKit();
 //Event listeners
 
 drumKit.pads.forEach((pad) => {
-    pad.addEventListener('click', drumKit.activePad);
+    pad.addEventListener('click', function (e) {
+        drumKit.activePad(e);
+    });
+    pad.addEventListener('click', () => {
+        drumKit.showSaveButton();
+    });
     pad.addEventListener('animationend', function () {
         this.style.animation = '';
     });
@@ -174,4 +222,14 @@ drumKit.tempoSlider.addEventListener('input', function (e) {
 });
 drumKit.tempoSlider.addEventListener('change', function (e) {
     drumKit.updateTempo(e);
+});
+
+//Save Button
+drumKit.saveButton.addEventListener('click', function (e) {
+    drumKit.saveCurrentMix(e);
+});
+
+//Load Button
+drumKit.loadButton.addEventListener('click', function (e) {
+    drumKit.loadTrackButton(e);
 });
