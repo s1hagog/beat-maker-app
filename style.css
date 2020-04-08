@@ -6,6 +6,17 @@
 
 body {
     font-family: sans-serif;
+    background: #ece9e6; /* fallback for old browsers */
+    background: -webkit-linear-gradient(
+        to right,
+        #ffffff,
+        #ece9e6
+    ); /* Chrome 10-25, Safari 5.1-6 */
+    background: linear-gradient(
+        to right,
+        #ffffff,
+        #ece9e6
+    ); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
 }
 
 i,
@@ -20,6 +31,7 @@ svg {
     height: 5rem;
     margin: 1rem 0.5rem;
     cursor: pointer;
+    border: 1px solid #959595;
 }
 
 .kick-pad {
@@ -47,6 +59,9 @@ svg {
 }
 
 .sequencer {
+    /* background: black; */
+    max-width: 1600px;
+    margin: auto;
     display: flex;
     min-height: 100vh;
     flex-direction: column;
@@ -74,8 +89,12 @@ svg {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin: 0 2rem;
+    margin-right: 2rem;
     flex: 1;
+}
+
+.controls h1 {
+    width: 100px;
 }
 
 .controls button {
@@ -109,6 +128,7 @@ svg {
 select {
     padding: 1rem;
     font-size: 1rem;
+    width: 200px;
 }
 
 .tempo {
