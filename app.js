@@ -12,13 +12,19 @@ class DrumkKit {
         this.bpm = 120;
         this.isPlaying = null;
         this.selects = document.querySelectorAll('select');
+        this.trackSelect = document.querySelector('.available-tracks');
         this.muteBtns = document.querySelectorAll('.mute');
         this.tempoSlider = document.querySelector('.tempo-slider');
         this.saveButton = document.querySelector('.save-track');
+        this.saveTrackButton = document.querySelector('.save-name');
         this.loadButton = document.querySelector('.load-track');
+        this.trackNameInput = document.querySelector('.track-name');
         this.activePadsNumber = 0;
-        this.myTracks = localStorage.getItem('myTracks') ? JSON.parse(localStorage.getItem('myTracks')) : {};
-
+        this.myTracks = localStorage.getItem('myTracks')
+            ? JSON.parse(localStorage.getItem('myTracks'))
+            : [];
+        this.saveTrackInputs = document.querySelector('.save-track-inputs');
+        this.loadTracks();
     }
 
     repeat() {
@@ -91,31 +97,96 @@ class DrumkKit {
         } else {
             if (this.activePadsNumber === 0) {
                 this.saveButton.classList.remove('visible');
+                this.saveTrackInputs.classList.add('hidden');
             }
         }
     }
 
     loadTrackButton(e) {
-        console.log(JSON.stringify(this.myTracks));
+        //Clear Sequence
+        this.clearSequence();
+
+        //Track Value is taken from option tag;
+        // const trackValue = this.trackSelect.value;
+
+        //Actually its better to use index, for performance
+        //I assume that our tracks in select will be always indexed the same as objects
+        //in the main track array
+        const trackIndex = this.trackSelect.selectedIndex;
+
+        //get the track
+        const track = this.myTracks[trackIndex];
+
+        //Output the track
+        track.trackMix.forEach((mix) => {
+            this.pads.forEach((innerPad) => {
+                if (innerPad.classList.contains(mix[1])) {
+                    if (innerPad.classList.contains(mix[2])) {
+                        innerPad.classList.add('active');
+                        return true;
+                    }
+                }
+            });
+        });
+    }
+
+    clearSequence() {
+        this.pads.forEach((pad) => {
+            pad.classList.remove('active');
+        });
+    }
+
+    showSaveTrackInputs() {
+        this.saveTrackInputs.classList.remove('hidden');
     }
 
     saveCurrentMix(e) {
-        const allPadsMix = Array.from(document.querySelectorAll('.pad'));
+        const trackName = this.trackNameInput.value;
 
-        const currentPadsMix = allPadsMix.filter((el) =>
-            el.classList.contains('active')
+        if (trackName) {
+            const allPadsMix = Array.from(document.querySelectorAll('.pad'));
+
+            const currentPadsMix = allPadsMix.filter((el) =>
+                el.classList.contains('active')
+            );
+
+            //Make classes array
+            const currentPadsClassesArray = currentPadsMix.map(
+                (pad) => pad.classList
+            );
+
+            const trackValue = trackName.replace(/ /g, '_').toLowerCase();
+
+            //Another approach
+            this.myTracks.push({
+                trackValue,
+                trackName,
+                trackMix: currentPadsClassesArray,
+            });
+            localStorage.setItem('myTracks', JSON.stringify(this.myTracks));
+
+            //Rewrite main tracks array to remove extra value from Node List (weird things are there)
+            this.myTracks = JSON.parse(localStorage.getItem('myTracks'));
+        } else {
+            alert('Imput Cannot be empty!');
+        }
+    }
+
+    loadTracks() {
+        const tracksSelect = Array.from(this.selects).filter(
+            (el) => el.className === 'available-tracks'
         );
 
-        //Make classes array
-        const currentPadsClassesArray = currentPadsMix.map(
-            (pad) => pad.classList
-        );
+        // Iterate through track data
+        this.myTracks.forEach((track) => {
+            //Create option element and fill with data
+            const option = document.createElement('option');
+            option.innerText = track.trackName;
+            option.value = track.trackValue;
 
-        const trackName = 'FirstMix';
-
-        this.myTracks[trackName] = currentPadsClassesArray;
-
-        localStorage.setItem('myTracks', JSON.stringify(this.myTracks));
+            //Small hack because our select is array with one element
+            tracksSelect[0].add(option);
+        });
     }
 
     changeSound(event) {
@@ -206,9 +277,11 @@ drumKit.playBtn.addEventListener('click', function () {
 });
 
 drumKit.selects.forEach((select) => {
-    select.addEventListener('change', function (e) {
-        drumKit.changeSound(e);
-    });
+    if (select.className !== 'available-tracks') {
+        select.addEventListener('change', function (e) {
+            drumKit.changeSound(e);
+        });
+    }
 });
 
 drumKit.muteBtns.forEach((button) => {
@@ -226,10 +299,15 @@ drumKit.tempoSlider.addEventListener('change', function (e) {
 
 //Save Button
 drumKit.saveButton.addEventListener('click', function (e) {
-    drumKit.saveCurrentMix(e);
+    drumKit.showSaveTrackInputs();
 });
 
 //Load Button
 drumKit.loadButton.addEventListener('click', function (e) {
     drumKit.loadTrackButton(e);
+});
+
+//Save Track Name Button
+drumKit.saveTrackButton.addEventListener('click', function (e) {
+    drumKit.saveCurrentMix(e);
 });

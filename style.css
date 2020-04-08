@@ -113,14 +113,19 @@ svg {
 
 .play,
 .save-track,
-.load-track {
+.load-track,
+.save-name {
     padding: 1rem 2rem;
     font-size: 1.5rem;
     background: rgb(88, 88, 88);
     color: white;
     border: none;
     cursor: pointer;
-    margin-top: 3rem;
+    margin: 3rem 2rem 0 2rem;
+}
+
+.save-name {
+    margin-top: 0;
 }
 
 .save-track {
@@ -162,6 +167,28 @@ select {
     font-size: 1.5rem;
     margin: 2rem;
     text-align: center;
+}
+
+.buttons {
+    display: flex;
+    justify-content: center;
+    width: 35%;
+}
+
+.save-track-inputs {
+    display: flex;
+    width: 35%;
+    justify-content: center;
+    margin-top: 2rem;
+}
+
+.track-name {
+    padding: 1rem;
+    font-size: 1rem;
+}
+
+.save-track-inputs.hidden {
+    display: none;
 }
 
 @keyframes playTrack {

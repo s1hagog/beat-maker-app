@@ -13,6 +13,11 @@
     </head>
     <body>
         <div class="sequencer">
+            <div class="load-track-wrapper">
+                <select name="savailable-tracks" class="available-tracks">
+                </select>
+                <button class="load-track">Load Track</button>
+            </div>
             <div class="kick-track">
                 <div class="controls">
                     <h1>Kick</h1>
@@ -84,9 +89,19 @@
                     <div class="pad hihat-pad b7"></div>
                 </div>
             </div>
-            <button class="save-track">Save Track</button>
-            <button class="load-track">Load Track</button>
-            <button class="play">Play</button>
+            <div class="buttons">
+                <button class="play">Play</button>
+                <button class="save-track">Save Track</button>
+            </div>
+            <div class="save-track-inputs hidden">
+                <input
+                    type="text"
+                    name="itrack-name"
+                    class="track-name"
+                    placeholder="Track Name"
+                />
+                <button class="save-name">Save</button>
+            </div>
 
             <div class="tempo">
                 <input type="range" class="tempo-slider" max="300" min="20" />
