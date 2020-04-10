@@ -128,6 +128,9 @@ class DrumkKit {
                 }
             });
         });
+
+        document.querySelector('.tempo-nr').innerText = track.trackBPM;
+        this.tempoSlider.value = track.trackBPM;
     }
 
     clearSequence() {
@@ -157,11 +160,14 @@ class DrumkKit {
 
             const trackValue = trackName.replace(/ /g, '_').toLowerCase();
 
+            const currentBPM = this.tempoSlider.value;
+
             //Another approach
             this.myTracks.push({
                 trackValue,
                 trackName,
                 trackMix: currentPadsClassesArray,
+                trackBPM: currentBPM,
             });
             localStorage.setItem('myTracks', JSON.stringify(this.myTracks));
 
