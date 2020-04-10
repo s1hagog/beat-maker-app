@@ -18,6 +18,7 @@ class DrumkKit {
         this.saveButton = document.querySelector('.save-track');
         this.saveTrackButton = document.querySelector('.save-name');
         this.loadButton = document.querySelector('.load-track');
+        this.deleteButton = document.querySelector('.delete-track');
         this.trackNameInput = document.querySelector('.track-name');
         this.activePadsNumber = 0;
         this.myTracks = localStorage.getItem('myTracks')
@@ -25,6 +26,8 @@ class DrumkKit {
             : [];
         this.saveTrackInputs = document.querySelector('.save-track-inputs');
         this.loadTracks();
+
+        this.trackSelect.selectedIndex = -1;
     }
 
     repeat() {
@@ -133,6 +136,16 @@ class DrumkKit {
         this.tempoSlider.value = track.trackBPM;
     }
 
+    showLoadButtons(e) {
+        if (
+            this.loadButton.classList.contains('hidden') &&
+            this.deleteButton.classList.contains('hidden')
+        ) {
+            this.loadButton.classList.remove('hidden');
+            this.deleteButton.classList.remove('hidden');
+        }
+    }
+
     clearSequence() {
         this.pads.forEach((pad) => {
             pad.classList.remove('active');
@@ -173,9 +186,37 @@ class DrumkKit {
 
             //Rewrite main tracks array to remove extra value from Node List (weird things are there)
             this.myTracks = JSON.parse(localStorage.getItem('myTracks'));
+
+            //Add name to the selects options;
+            const newOption = document.createElement('option');
+            newOption.text = trackName;
+            newOption.value = trackValue;
+            this.trackSelect.add(newOption);
         } else {
             alert('Imput Cannot be empty!');
         }
+    }
+
+    deleteCurrentMix(e) {
+        //Getting track Value
+        const trackValue = this.trackSelect.options[
+            this.trackSelect.selectedIndex
+        ].value;
+
+        //Changing local storage array
+        const oldTracksArray = JSON.parse(localStorage.getItem('myTracks'));
+        const newTracksArray = oldTracksArray.filter(
+            (el) => el.trackValue != trackValue
+        );
+
+        //Rewriting new array to local storage
+        localStorage.setItem('myTracks', JSON.stringify(newTracksArray));
+
+        //Rewriting inner array
+        this.myTracks = newTracksArray;
+
+        //UI changes
+        this.trackSelect.remove(this.trackSelect.selectedIndex);
     }
 
     loadTracks() {
@@ -312,8 +353,16 @@ drumKit.saveButton.addEventListener('click', function (e) {
 drumKit.loadButton.addEventListener('click', function (e) {
     drumKit.loadTrackButton(e);
 });
+drumKit.trackSelect.addEventListener('change', function (e) {
+    drumKit.showLoadButtons(e);
+});
 
 //Save Track Name Button
 drumKit.saveTrackButton.addEventListener('click', function (e) {
     drumKit.saveCurrentMix(e);
+});
+
+//Delete Button
+drumKit.deleteButton.addEventListener('click', function (e) {
+    drumKit.deleteCurrentMix(e);
 });

@@ -114,7 +114,8 @@ svg {
 .play,
 .save-track,
 .load-track,
-.save-name {
+.save-name,
+.delete-track {
     padding: 1rem 2rem;
     font-size: 1.5rem;
     background: rgb(88, 88, 88);
@@ -126,23 +127,34 @@ svg {
     transition: all 0.3s;
 }
 
+.delete-track.hidden {
+    display: none;
+}
+
+.load-track.hidden {
+    display: none;
+}
+
 .play:hover,
 .save-track:hover,
 .load-track:hover,
-.save-name:hover {
+.save-name:hover,
+.delete-track:hover {
     background: #333333;
 }
 
 .play:active,
 .save-track:active,
 .load-track:active,
-.save-name:active {
+.save-name:active,
+.delete-track:active {
     outline: none;
 }
 .play:focus,
 .save-track:focus,
 .load-track:focus,
-.save-name:focus {
+.save-name:focus,
+.delete-track:focus {
     outline: none;
 }
 
@@ -211,6 +223,16 @@ select {
 
 .save-track-inputs.hidden {
     display: none;
+}
+
+.load-track-wrapper {
+    margin: 2em;
+    display: flex;
+}
+
+h2 {
+    margin-right: 2em;
+    line-height: 3rem;
 }
 
 @keyframes playTrack {
