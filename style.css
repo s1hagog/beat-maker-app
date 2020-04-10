@@ -122,6 +122,28 @@ svg {
     border: none;
     cursor: pointer;
     margin: 3rem 2rem 0 2rem;
+    border-radius: 0.5rem;
+    transition: all 0.3s;
+}
+
+.play:hover,
+.save-track:hover,
+.load-track:hover,
+.save-name:hover {
+    background: #333333;
+}
+
+.play:active,
+.save-track:active,
+.load-track:active,
+.save-name:active {
+    outline: none;
+}
+.play:focus,
+.save-track:focus,
+.load-track:focus,
+.save-name:focus {
+    outline: none;
 }
 
 .save-name {
